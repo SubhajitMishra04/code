@@ -10,12 +10,6 @@ struct node
     float price;
 }p[5];
 
-int comparator(const void* p, const void* q)
-{
-    return strcmp(((struct node*)p)->name,
-                  ((struct node*)q)->name);
-}
-
 
 
 int main()
@@ -40,12 +34,6 @@ int main()
         printf("\nPhone:\n%s\n%s\n%d\n%f\n", p[i].name, p[i].brand, p[i].memory, p[i].price);
     }
 
-qsort(p, n, sizeof(struct node), comparator);
-
-for(i=0;i<2;i++)
-    {
-        printf("\nPhone:\n%s\n%s\n%d\n%f\n", p[i].name, p[i].brand, p[i].memory, p[i].price);
-    }
 
 
 }
