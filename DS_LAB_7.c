@@ -1,196 +1,132 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<string.h>
 
-#define MAX 50
 
-typedef struct mobile
+struct node
 {
-	char model[MAX],brand[MAX];
-	int memcap;
-	float price;
-	struct mobile *link;
-}mobile;
-
-mobile *head;
+    int part;
+    int quantity;
+}p[100];
 
 
-void add()
+int count,mod,temp,tempQ,search,collison;
+
+void enter()
 {
-	mobile *temp,*ptr;
-	char choice='y';
-	while(choice=='y' || choice=='Y')
-	{
-	ptr=(mobile *)malloc(sizeof(mobile));
-	if(ptr==NULL)
-	{
-	printf("\nMemory Allocation Failed.");
-	}
-	printf("\nEnter Model:");
-	scanf("%s",ptr->model);
-	printf("\nEnter Brand Name:");
-	scanf("%s",ptr->brand);
-	printf("\nEnter Memeory:");
-	scanf("%d",&ptr->memcap);
-	printf("\nEnter Price:");
-	scanf("%f",&ptr->price);
-	ptr->link=NULL;
-	if(head==NULL)
-	{
-	head=ptr;
-	}
-	else
-	{
-	temp=head;
-	while(temp->link!=NULL)
-	{
-	temp=temp->link;
-	}
-	temp->link=ptr;
-	}
-	printf("\nDo you want to add more(y/n):");
-	scanf(" %c",&choice);
-	}
-}
 
-void display()
-{
-	mobile *temp;
-	int i=1;
-	temp=head;
-	if(head==NULL)
-	{
-	printf("\nEmpty List.");
-	}
-	else
-	{
-	while(temp!=NULL)
-	{
-	printf("\n\n%d.Model:%s",i,temp->model);
-	printf("\n%d.Brand:%s",i,temp->brand);
-	printf("\n%d.Memory Capacity:%d",i,temp->memcap);
-	printf("\n%d.Price:%2f",i,temp->price);
-	temp=temp->link;
-	i+=1;
-	}
-	}
-}
+    printf("\nEnter the no of values : ");
 
-int size()
-{
-	mobile *temp;
-	int size=0;
-	temp=head;
-	while(temp!=NULL)
-	{
-	temp=temp->link;
-	size+=1;
-	}
-	return size;
-}
-	
+    scanf("%d",&count);
 
-void pricesort()
-{
-	int i,j,count,swapflag;
-	count=size();
-	mobile *otemp,*itemp1,*itemp2,temp;
-	for(i=0;i<=count;i+=1)
-	{
-	otemp=head;
-	swapflag=0;
-	for(j=0;j<count-i-1;j+=1)
-	{
-	itemp1=otemp;
-	itemp2=otemp->link;
-	if(itemp1->price > itemp2->price)
-	{
-	strcpy(temp.brand,itemp1->brand);
-	strcpy(temp.model,itemp1->model);
-	temp.memcap=itemp1->memcap;
-	temp.price=itemp1->price;
-	
-	strcpy(itemp1->brand,itemp2->brand);
-	strcpy(itemp1->model,itemp2->model);
-	itemp1->memcap=itemp2->memcap;
-	itemp1->price=itemp2->price;
-	
-	strcpy(itemp2->brand,temp.brand);
-	strcpy(itemp2->model,temp.model);
-	itemp2->memcap=temp.memcap;
-	itemp2->price=temp.price;
-	}
-	otemp=otemp->link;
-	}
-	}
-	display();
+    for (int i = 0; i < count; i++)
+    {
+        printf("\nEnter Part Number %d : ",i+1);
+        scanf("%d",&temp);
+        mod=temp%100;
+        if (p[mod].part==0)
+        {
+        p[mod].part=temp;
+        printf("\nEnter Quantity %d : ",i+1);
+        scanf("%d",&tempQ);
+        p[mod].quantity=tempQ;
+        }
+        else
+        {
+        collison++;
+        p[mod+1].part=temp;
+        printf("\nEnter Quantity %d : ",i+1);
+        scanf("%d",&tempQ);
+        p[mod+1].quantity=tempQ;
+        }
+        
+
+    }
 }
 
 
-void brandsort()
+void print()
 {
-	int i,j,count,swapflag;
-	count=size();
-	mobile *otemp,*itemp1,*itemp2,temp;
-	for(i=0;i<=count;i+=1)
-	{
-	otemp=head;
-	swapflag=0;
-	for(j=0;j<count-i-1;j+=1)
-	{
-	itemp1=otemp;
-	itemp2=otemp->link;
-	if(strcmp(itemp1->brand,itemp2->brand)>0)
-	{
-	strcpy(temp.brand,itemp1->brand);
-	strcpy(temp.model,itemp1->model);
-	temp.memcap=itemp1->memcap;
-	temp.price=itemp1->price;
-	
-	strcpy(itemp1->brand,itemp2->brand);
-	strcpy(itemp1->model,itemp2->model);
-	itemp1->memcap=itemp2->memcap;
-	itemp1->price=itemp2->price;
-	
-	strcpy(itemp2->brand,temp.brand);
-	strcpy(itemp2->model,temp.model);
-	itemp2->memcap=temp.memcap;
-	itemp2->price=temp.price;
-	}
-	otemp=otemp->link;
-	}
-	}
-	display();
+        for (int i = 0; i < 100; i++)
+    {
+        // if (p[i].part!=0)
+        // {
+        printf("\nPart no[%d]: %d , Quantity : %d",i,p[i].part,p[i].quantity);
+        // }
+        
+    }
 }
 
+void collisionShow()
+{
 
+    printf("\nCollisions occured : %d",collison);
+
+}
+
+void searchElement()
+{
+
+
+    printf("\nInventory Item for search : ");
+    scanf("%d",&search);
+
+    mod=search%100;
+    if (search==p[mod].part)
+    {
+        printf("\nFor Part number : %d , Quantity Sold : %d ",p[mod].part,p[mod].quantity);
+    }
+    else
+    {
+        printf("\nFor Part number : %d , Quantity Sold : %d \n",p[mod+1].part,p[mod+1].quantity);
+
+    }
+    
+}
 
 int main()
 {
-	int choice,count;
-	while(1)
-	{
-	printf("\n\n 1.ADD mobile details\n 2.Sort based on brand\n 3.Sort based on price\n 4.Display list\n 5.Exit\n Enter your choice:");
-	scanf("%d",&choice);
-	switch (choice)
-	{
-	case 1:
-	add();
-	break;
-	case 2:
-	brandsort();
-	break;
-	case 3:
-	pricesort();
-	break;
-	case 4:
-	display();
-	break;
-	case 5:
-	exit(0);
-	default:
-	printf("\nInvalid Input !!\nTry Again !!");
-	}
-	}
-	return 0;
+
+int choice;
+
+printf("\n*********************\n\nDS LAB 7\n\n*********************\n\n\n");
+
+printf("1. Enter");
+
+while(1)
+{
+
+printf("\n2. Print\n3. Collision\n4. Search\n5. Exit\nEnter Choice : ");
+scanf("%d",&choice);
+
+switch(choice)
+{
+    case 1:
+        enter();
+        break;
+
+    case 2:
+        print();
+        break;
+
+    case 3:
+        collisionShow();
+        break;
+
+    case 4:
+        searchElement();
+        break;
+
+    case 5:
+        exit(0);
+        break;
+
+    default:
+        printf("\nInvalid Choice");
+        break;
+
+}
+
+}
+    
+    
 }
