@@ -13,30 +13,34 @@ int count,mod,temp,tempQ,search,collison;
 
 void enter()
 {
+    // int last=100;
+    // printf("\nEnter the no of values : ");
 
-    printf("\nEnter the no of values : ");
-
-    scanf("%d",&count);
-
-    for (int i = 0; i < count; i++)
-    {
-        printf("\nEnter Part Number %d : ",i+1);
+    // scanf("%d",&count);
+    printf("\nEnter Part Number : ");
         scanf("%d",&temp);
         mod=temp%100;
+    for (int i = mod; i < 100; i++)
+    {
+        
+        
         if (p[mod].part==0)
         {
         p[mod].part=temp;
-        printf("\nEnter Quantity %d : ",i+1);
+        printf("\nEnter Quantity : ");
         scanf("%d",&tempQ);
         p[mod].quantity=tempQ;
+        break;
+        }
+        else if(mod==99) {
+            mod=0;
+            i=0;
+            collison++;
         }
         else
         {
         collison++;
-        p[mod+1].part=temp;
-        printf("\nEnter Quantity %d : ",i+1);
-        scanf("%d",&tempQ);
-        p[mod+1].quantity=tempQ;
+        mod++;
         }
         
 
@@ -66,18 +70,24 @@ void collisionShow()
 void searchElement()
 {
 
-
+    int i,success=0;
     printf("\nInventory Item for search : ");
     scanf("%d",&search);
 
     mod=search%100;
-    if (search==p[mod].part)
+    for(i=0;i<100;i++)
     {
-        printf("\nFor Part number : %d , Quantity Sold : %d ",p[mod].part,p[mod].quantity);
+        if (search==p[i].part)
+    {
+        printf("\nFor Part number : %d , Quantity Sold : %d ",p[i].part,p[i].quantity);
+        success++;
+        break;
     }
-    else
+    }
+    
+    if(success==0)
     {
-        printf("\nFor Part number : %d , Quantity Sold : %d \n",p[mod+1].part,p[mod+1].quantity);
+        printf("\nItem not found");
 
     }
     
