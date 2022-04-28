@@ -1,0 +1,35 @@
+The network layer or layer 3 of the OSI (Open Systems Interconnection) model is concerned delivery of data packets from the source to the destination across multiple hops or links. It is the lowest layer that is concerned with end − to − end transmission. The designers who are concerned with designing this layer needs to cater to certain issues. These issues encompasses the services provided to the upper layers as well as internal design of the layer.
+
+The design issues can be elaborated under four heads −
+
+Store − and − Forward Packet Switching
+
+Services to Transport Layer
+
+Providing Connection Oriented Service
+
+Providing Connectionless Service
+
+Store − and − Forward Packet Switching
+The network layer operates in an environment that uses store and forward packet switching. The node which has a packet to send, delivers it to the nearest router. The packet is stored in the router until it has fully arrived and its checksum is verified for error detection. Once, this is done, the packet is forwarded to the next router. Since, each router needs to store the entire packet before it can forward it to the next hop, the mechanism is called store − and − forward switching.
+
+Services to Transport Layer
+The network layer provides service its immediate upper layer, namely transport layer, through the network − transport layer interface. The two types of services provided are −
+
+Connection − Oriented Service − In this service, a path is setup between the source and the destination, and all the data packets belonging to a message are routed along this path.
+
+Connectionless Service − In this service, each packet of the message is considered as an independent entity and is individually routed from the source to the destination.
+
+The objectives of the network layer while providing these services are −
+
+The services should not be dependent upon the router technology.
+
+The router configuration details should not be of a concern to the transport layer.
+
+A uniform addressing plan should be made available to the transport layer, whether the network is a LAN, MAN or WAN.
+
+Providing Connection Oriented Service
+In connection − oriented services, a path or route called a virtual circuit is setup between the source and the destination nodes before the transmission starts. All the packets in the message are sent along this route. Each packet contains an identifier that denotes the virtual circuit to which it belongs to. When all the packets are transmitted, the virtual circuit is terminated and the connection is released. An example of connection − oriented service is MultiProtocol Label Switching (MPLS).
+
+Providing Connectionless Service
+In connectionless service, since each packet is transmitted independently, each packet contains its routing information and is termed as datagram. The network using datagrams for transmission is called datagram networks or datagram subnets. No prior setup of routes are needed before transmitting a message. Each datagram belong to the message follows its own individual route from the source to the destination. An example of connectionless service is Internet Protocol or IP
