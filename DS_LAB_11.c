@@ -1,71 +1,154 @@
 #include<stdio.h>
-#include<conio.h>
 #include<stdlib.h>
-struct tree {
-	int info;
-	struct tree *left;
-	struct tree *right;
-};
-struct tree *insert(struct tree *,int);
-void inorder(struct tree *);
-int main(void) {
-	struct tree *root;
-	int choice, item,item_no;
-	root = NULL;
 
-	do {
-		do {
-			printf("\n \t 1. Insert in Binary Tree  ");
-			printf("\n\t 2. Inorder traversal of Binary tree");
-			printf("\n\t 3. Exit ");
-			printf("\n\t Enter choice : ");
-			scanf(" %d",&choice);
-			if(choice<1 || choice>4)
-			      printf("\n Invalid choice - try again");
+typedef struct node
+{
+	int data;
+	struct node *lchild;
+	struct node *rchild;
+}node;
+
+node *root;
+
+void createTree()
+{
+	node *temp,*ptr;
+	int choice,data,flag=0;
+	ptr=(node *)malloc(sizeof(node));
+	if(ptr==NULL)
+	{
+		printf("\nMemory Allocation failed");
+	}
+	ptr->lchild = NULL;
+	ptr->rchild = NULL;
+	printf("\nEnter the data:");
+	scanf("%d",&data);
+	ptr->data = data;
+	if(root==NULL)
+	{
+//		printf("\nif starting");
+		root = ptr;
+		temp = ptr;
+//		printf("\nif ending");
+	}
+	else
+	{
+		temp = root;
+		while(flag==0)
+		{
+			if(ptr->data < temp->data && temp->lchild != NULL)
+			{
+				temp=temp->lchild;
+			}
+			else if(ptr->data > temp->data && temp->rchild != NULL)
+			{
+				temp = temp->rchild;
+			}
+			else
+			{
+				flag=1;
+			}
 		}
-		while (choice<1 || choice>7);
-		switch(choice) {
-			case 1:
-				   printf("\n Enter new element: ");
-			scanf("%d", &item);
-			root= insert(root,item);
-			printf("\n root is %d",root->info);
-//			printf("\n Inorder traversal of binary tree is : ");
-//			inorder(root);
-			break;
-		
-			case 2:
-				  printf("\n Inorder traversal of binary tree is : ");
-			inorder(root);
-			break;
-			default:
-				   printf("\n End of program ");
+		if(ptr->data < temp->data)
+		{
+			temp->lchild = ptr;
 		}
-		/* end of switch */
+		else
+		{
+			temp->rchild = ptr;
+		}
 	}
-	while(choice !=4);
-	return(0);
 }
-struct tree *insert(struct tree *root, int x) {
-	if(!root) {
-		root=(struct tree*)malloc(sizeof(struct tree));
-		root->info = x;
-		root->left = NULL;
-		root->right = NULL;
-		return(root);
+
+
+void displayTree(node *temp)
+{
+	if(temp == NULL)
+	{
+		return;
 	}
-	if(root->info > x)
-	     root->left = insert(root->left,x); else {
-		if(root->info < x)
-			root->right = insert(root->right,x);
-	}
-	return(root);
+	displayTree(temp->lchild);
+	printf("%d\t",temp->data);
+	displayTree(temp->rchild);	
 }
-void inorder(struct tree *root) {
-	if(root != NULL) {
-		inorder(root->left);
-		printf(" %d",root->info);
-		inorder(root->right);
+
+void findCielFloor(int data)
+{
+	int min=10000000,max=0;
+	node *temp;
+	temp = root;
+	if(root==NULL)
+	{
+		printf("\nTree is empty.");
+		exit(0);
 	}
+	else
+	{
+		while(temp != NULL)
+		{
+			if(data == temp->data)
+			{
+				max = temp->data;
+				min = temp->data;
+				break;
+			}
+			else
+			{
+				if(temp->data > data)
+				{
+					max = temp->data;
+					temp = temp->lchild;
+				}
+				else if(temp->data < data)
+				{
+					min = temp->data;
+					temp = temp->rchild;
+				}
+			}
+		}
+	}
+	if(min == 10000000)
+	{
+		printf("\n Ciel = %d\n Floor = Dosen't Exists",max);
+		return;
+	}
+	if(max == 0)
+	{
+		printf("\n Ciel = Dosen't Exists\n Floor = %d",min);
+		return;
+	}
+	printf("\n Ciel = %d\n Floor = %d",max,min);
 	return;
+}
+
+
+
+int main()
+{
+	int choice,num;
+	while(1)
+	{
+		
+		printf("\n1.Create Binary Tree\n2.Display Binary Tree\n3.Find Ceil and Floor for a no.\n4.Exit\nEnter your choice:");
+		scanf("%d",&choice);
+		switch (choice)
+		{
+			case 1:
+				createTree();
+				break;
+			case 2:
+				displayTree(root);
+				break;
+			case 3:
+				printf("\nEnter the number:");
+				scanf("%d",&num);
+				findCielFloor(num);
+				break;
+			case 4:
+				exit(0);
+			default:
+				printf("\nInvalid Input !!\nTry Again !!");
+		}
+	}
+	return 0;
 }
