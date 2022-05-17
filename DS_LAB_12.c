@@ -1,177 +1,187 @@
-#include<stdio.h>
-#include<stdlib.h>
-struct Node
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node
 {
-int key;
-struct Node *lft;
-struct Node *rgt;
-int height;
-};
-int max(int a, int b);
-int height(struct Node *N)
+    int data;
+    struct node *left, *right;
+    int ht;
+} node;
+
+node *insert(node *, int);
+void preorder(node *);
+void inorder(node *);
+int height(node *);
+node *rotateright(node *);
+node *rotateleft(node *);
+node *RR(node *);
+node *LL(node *);
+node *LR(node *);
+node *RL(node *);
+int BF(node *);
+void main()
 {
-if (N == NULL)
-return 0;
-return N->height;
+    node *root = NULL;
+    int x, n, i, op;
+
+    printf("1)Create ");
+    printf("\n2)Insert  ");
+    printf("\n3)Print  ");
+    printf("\n4)Quit   ");
+    do
+    {
+        printf("\nEnter Your Choice : ");
+        scanf("%d", &op);
+        switch (op)
+        {
+        case 1:
+            printf("Enter no.of elements :");
+            scanf("%d", &n);
+            printf("\n Enter tree data :");
+            root = NULL;
+            for (i = 0; i < n; i++)
+            {
+                scanf("%d", &x);
+                root = insert(root, x);
+            }
+            break;
+        case 2:
+            printf("\nEnter a data : ");
+            scanf("%d", &x);
+            root = insert(root, x);
+            break;
+
+        case 3:
+            printf("\nPreorder sequence :\n");
+            preorder(root);
+            printf("\nInorder sequence :\n");
+            inorder(root);
+            break;
+        }
+
+    } while (op != 4);
 }
-int max(int a, int b)
+node *insert(node *T, int x)
 {
-return (a > b)? a : b;
+    if (T == NULL)
+    {
+        T = (node *)malloc(sizeof(node));
+        T->data = x;
+        T->left = NULL;
+        T->right = NULL;
+    }
+    else if (x > T->data) // insert in right subtree
+    {
+        T->right = insert(T->right, x);
+        if (BF(T) == -2)
+            if (x > T->right->data)
+                T = RR(T);
+            else
+                T = RL(T);
+    }
+    else if (x < T->data)
+    {
+        T->left = insert(T->left, x);
+        if (BF(T) == 2)
+            if (x < T->left->data)
+                T = LL(T);
+            else
+                T = LR(T);
+    }
+    T->ht = height(T);
+    return (T);
 }
-struct Node* newNode(int key)
+
+int height(node *T)
 {
-struct Node* node = (struct Node*)
-malloc(sizeof(struct Node));
-node->key   = key;
-node->lft   = NULL;
-node->rgt  = NULL;
-node->height = 1;
-return(node);
+    int lh, rh;
+    if (T == NULL)
+        return (0);
+    if (T->left == NULL)
+        lh = 0;
+    else
+        lh = 1 + T->left->ht;
+    if (T->right == NULL)
+        rh = 0;
+    else
+        rh = 1 + T->right->ht;
+    if (lh > rh)
+        return (lh);
+    return (rh);
 }
-struct Node *rgtRotate(struct Node *y)
+node *rotateright(node *x)
 {
-struct Node *x = y->lft;
-struct Node *T2 = x->rgt;
-x->rgt = y;
-y->lft = T2;
-y->height = max(height(y->lft), height(y->rgt))+1;
-x->height = max(height(x->lft), height(x->rgt))+1;
-return x;
+    node *y;
+    y = x->left;
+    x->left = y->right;
+    y->right = x;
+    x->ht = height(x);
+    y->ht = height(y);
+    return (y);
 }
-struct Node *lftRotate(struct Node *x)
+node *rotateleft(node *x)
 {
-struct Node *y = x->rgt;
-struct Node *T2 = y->lft;
-y->lft = x;
-x->rgt = T2;
-x->height = max(height(x->lft), height(x->rgt))+1;
-y->height = max(height(y->lft), height(y->rgt))+1;
-return y;
+    node *y;
+    y = x->right;
+    x->right = y->left;
+    y->left = x;
+    x->ht = height(x);
+    y->ht = height(y);
+    return (y);
 }
-int getBalance(struct Node *N)
+node *RR(node *T)
 {
-if (N == NULL)
-return 0;
-return height(N->lft) - height(N->rgt);
+    T = rotateleft(T);
+    return (T);
 }
-struct Node* insert(struct Node* node, int key)
+node *LL(node *T)
 {
-if (node == NULL)
-return(newNode(key));
-if (key < node->key)
-node->lft  = insert(node->lft, key);
-else if (key > node->key)
-node->rgt = insert(node->rgt, key);
-else
-return node;
-node->height = 1 + max(height(node->lft),
-height(node->rgt));
-int balance = getBalance(node);
-if (balance > 1 && key < node->lft->key)
-return rgtRotate(node);
-if (balance < -1 && key > node->rgt->key)
-return lftRotate(node);
-if (balance > 1 && key > node->lft->key)
-{
-node->lft =  lftRotate(node->lft);
-return rgtRotate(node);
+    T = rotateright(T);
+    return (T);
 }
-if (balance < -1 && key < node->rgt->key)
+node *LR(node *T)
 {
-node->rgt = rgtRotate(node->rgt);
-return lftRotate(node);
+    T->left = rotateleft(T->left);
+    T = rotateright(T);
+    return (T);
 }
-return node;
-}
-struct Node * minValueNode(struct Node* node)
+node *RL(node *T)
 {
-struct Node* current = node;
-/* loop down to find the lftmost leaf */
-while (current->lft != NULL)
-current = current->lft;
-return current;
+    T->right = rotateright(T->right);
+    T = rotateleft(T);
+    return (T);
 }
-struct Node* deleteNode(struct Node* base, int key)
+int BF(node *T)
 {
-if (base == NULL)
-return base;
-if ( key < base->key )
-base->lft = deleteNode(base->lft, key);
-else if( key > base->key )
-base->rgt = deleteNode(base->rgt, key);
-else
-{
-if( (base->lft == NULL) || (base->rgt == NULL) )
-{
-struct Node *temp = base->lft ? base->lft :
-base->rgt;
-if (temp == NULL)
-{
-temp = base;
-base = NULL;
+    int lh, rh;
+    if (T == NULL)
+        return (0);
+    if (T->left == NULL)
+        lh = 0;
+    else
+        lh = 1 + T->left->ht;
+    if (T->right == NULL)
+        rh = 0;
+    else
+        rh = 1 + T->right->ht;
+    return (lh - rh);
 }
-else
-*base = *temp;
-free(temp);
-}
-else
+void preorder(node *T)
 {
-struct Node* temp = minValueNode(base->rgt);
-base->key = temp->key;
-base->rgt = deleteNode(base->rgt, temp->key);
+    if (T != NULL)
+    {
+        printf(" %d(Bf=%d)", T->data, BF(T));
+        preorder(T->left);
+        preorder(T->right);
+    }
 }
-}
-if (base == NULL)
-return base;
-base->height = 1 + max(height(base->lft),
-height(base->rgt));
-int balance = getBalance(base);
-if (balance > 1 && getBalance(base->lft) >= 0)
-return rgtRotate(base);
-if (balance > 1 && getBalance(base->lft) < 0)
+void inorder(node *T)
 {
-base->lft =  lftRotate(base->lft);
-return rgtRotate(base);
-}
-if (balance < -1 && getBalance(base->rgt) <= 0)
-return lftRotate(base);
-if (balance < -1 && getBalance(base->rgt) > 0)
-{
-base->rgt = rgtRotate(base->rgt);
-return lftRotate(base);
-}
-return base;
-}
-void preOrder(struct Node *base)
-{
-if(base != NULL)
-{
-printf("%d ", base->key);
-preOrder(base->lft);
-preOrder(base->rgt);
-}
-}
-int main()
-{
-struct Node *base = NULL;
-base = insert(base, 27);
-base = insert(base, 9);
-base = insert(base, 19);
-base = insert(base, 91);
-base = insert(base, 90);
-base = insert(base, 72);
-printf("The output of an AVL tree in preOrder form: \n");
-preOrder(base);
-printf("\n");
-base = deleteNode(base, 9);
-base = deleteNode(base, 72);
-printf("The tree in preOrder traversal outputs after deletion: \n");
-preOrder(base);
-printf("\n");
-base = insert(base, 1);
-base = insert(base, 2709);
-printf("The tree in preOrder traversal outputs 2 more inserts: \n");
-preOrder(base);
-printf("\n");
-return 0;
+    if (T != NULL)
+    {
+        inorder(T->left);
+        printf(" %d(Bf=%d)", T->data, BF(T));
+        inorder(T->right);
+    }
 }
